@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Общак</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#0c0c0d;--grid:#1b1b1e;--ink:#f3efe3;--soft:#a39a82;--gold:#e8b923;--in:#41e08a;--out:#ff5252;--field:#18181b;--line:#4a3f1c;color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--paper) repeating-linear-gradient(135deg,transparent 0 14px,var(--grid) 14px 15px);color:var(--ink);font:400 16px/1.5 "Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:28px 20px 60px 30px;border-left:8px dotted var(--gold);margin-left:max(10px,calc(50% - 360px))}
+h1,h2{font-family:"Russo One",Impact,"Arial Black",sans-serif;font-weight:400;margin:0;color:var(--gold)}
+h1{font-size:2.4rem;line-height:1.1;text-shadow:3px 3px 0 #000,5px 5px 0 var(--out)}
+h2{font-size:1.35rem;margin:34px 0 8px;letter-spacing:.02em}
+.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between}
+.ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+label{font-size:.85rem;color:var(--soft)}
+input,select,button{font:inherit;color:var(--ink)}
+input,select{background:var(--field);border:2px solid var(--line);border-radius:4px;padding:8px 10px;min-height:42px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);margin-top:22px;border:3px solid var(--gold);background:var(--paper)}
+.sum div{padding:10px 12px;border-right:2px solid var(--line)}
+.sum div:last-child{border-right:0}
+.sum span{display:block;font-size:.85rem;color:var(--soft)}
+.sum b{font-family:"Russo One",Impact,sans-serif;font-weight:400;font-size:1.5rem;line-height:1.3}
+.in{color:var(--in)}.out{color:var(--out)}
+.seg{display:inline-flex;border:2px solid var(--gold);border-radius:4px;overflow:hidden}
+.seg button{border:0;background:var(--field);padding:8px 18px;min-height:42px;cursor:pointer;font-family:"Russo One",Impact,sans-serif}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#000}
+.add{margin-top:22px;display:grid;gap:12px;background:var(--paper);padding:14px;border:2px solid var(--line)}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.row>div{display:flex;flex-direction:column;gap:4px}
+.go{border:2px solid #000;background:var(--gold);color:#000;padding:10px 20px;border-radius:4px;cursor:pointer;min-height:46px;font-family:"Russo One",Impact,sans-serif;justify-self:start;box-shadow:4px 4px 0 #7a1f1f}
+.go:active{transform:translate(2px,2px);box-shadow:2px 2px 0 #7a1f1f}
+.err{color:var(--out);min-height:1.2em;font-size:.9rem;margin:0}
+ul{list-style:none;margin:0;padding:0;background:var(--paper)}
+li{display:grid;grid-template-columns:64px 1fr auto 36px;gap:10px;align-items:center;padding:9px 4px;border-bottom:1px solid var(--line)}
+li .d{color:var(--soft);font-size:.9rem}
+li .n{color:var(--soft);font-size:.88rem;display:block;overflow-wrap:anywhere}
+li .a{font-weight:600;white-space:nowrap}
+li button{border:0;background:none;color:var(--soft);font-size:1.4rem;line-height:1;cursor:pointer;min-width:36px;min-height:36px;border-radius:4px}
+li button:hover{color:var(--out)}
+.empty{padding:18px 4px;color:var(--soft);background:var(--paper)}
+.bars{display:grid;gap:8px;background:var(--paper);padding:6px 0}
+.bar{display:grid;grid-template-columns:110px 1fr auto;gap:10px;align-items:center;font-size:.92rem}
+.bar i{display:block;height:12px;background:var(--gold);border-radius:2px}
+.hint{font-size:.82rem;color:var(--soft);margin-top:26px;background:var(--paper)}
+@media (max-width:520px){main{padding-left:18px;margin-left:6px;border-left-width:6px}li{grid-template-columns:52px 1fr auto 34px;gap:6px}.bar{grid-template-columns:84px 1fr auto}.sum b{font-size:1.15rem}h1{font-size:1.9rem}}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <h1>Мой общак</h1>
+    <div class="ctl">
+      <div><label for="month">Месяц</label><br><select id="month"></select></div>
+      <div><label for="cur">Валюта</label><br><input id="cur" maxlength="4" size="3" value="€" style="width:4.2em"></div>
+    </div>
+  </div>
+
+  <div class="sum" aria-live="polite">
+    <div><span>Поднял</span><b class="in" id="s-in">0</b></div>
+    <div><span>Спустил</span><b class="out" id="s-out">0</b></div>
+    <div><span>В кармане</span><b id="s-bal">0</b></div>
+  </div>
+
+  <form class="add" id="f" novalidate>
+    <div class="seg" role="group" aria-label="Тип записи">
+      <button type="button" id="t-out" aria-pressed="true">Спустил</button>
+      <button type="button" id="t-in" aria-pressed="false">Поднял</button>
+    </div>
+    <div class="row">
+      <div><label for="amt">Сумма</label><input id="amt" inputmode="decimal" placeholder="0"></div>
+      <div><label for="cat">Категория</label><select id="cat"></select></div>
+      <div><label for="dt">Дата</label><input id="dt" type="date"></div>
+    </div>
+    <div><label for="note">Заметка</label><input id="note" maxlength="80" placeholder="Необязательно" style="width:100%"></div>
+    <p class="err" id="err" role="alert"></p>
+    <button class="go" type="submit">Записать в общак</button>
+  </form>
+
+  <h2>Движуха</h2>
+  <ul id="list"></ul>
+
+  <h2>Куда ушли бабки</h2>
+  <div class="bars" id="bars"></div>
+
+  <p class="hint" id="hint">Записи сохраняются в этом браузере.</p>
+</main>
+<script>
+(function(){
+var CATS={out:["Еда","Транспорт","Жильё","Здоровье","Развлечения","Покупки","Другое"],in:["Зарплата","Подработка","Подарок","Другое"]};
+var S={cur:"€",items:[]},type="out",dbDoc=null;
+var today=function(){return new Date().toLocaleDateString("sv")};
+var month=today().slice(0,7);
+var $=function(s){return document.querySelector(s)};
+var nf=new Intl.NumberFormat("ru-RU",{maximumFractionDigits:2});
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function money(n){return nf.format(n)+"\u00a0"+S.cur}
+function fix(){S=Object.assign({cur:"€",items:[]},S);if(!Array.isArray(S.items))S.items=[]}
+function loadLocal(){try{var r=localStorage.getItem("ledger-v1");if(r)S=JSON.parse(r)}catch(e){}fix()}
+function persist(){try{localStorage.setItem("ledger-v1",JSON.stringify(S))}catch(e){}if(dbDoc)dbDoc.set(S).catch(function(){})}
+function fillCats(){$("#cat").innerHTML=CATS[type].map(function(c){return"<option>"+c+"</option>"}).join("")}
+function render(){
+  var ms={};ms[today().slice(0,7)]=1;S.items.forEach(function(i){ms[i.d.slice(0,7)]=1});
+  var keys=Object.keys(ms).sort().reverse();if(keys.indexOf(month)<0)month=keys[0];
+  $("#month").innerHTML=keys.map(function(k){
+    var d=new Date(k+"-01T12:00:00");var l=d.toLocaleDateString("ru-RU",{month:"long",year:"numeric"});
+    return'<option value="'+k+'"'+(k===month?" selected":"")+">"+l+"</option>"}).join("");
+  $("#cur").value=S.cur;
+  var rows=S.items.filter(function(i){return i.d.slice(0,7)===month}).sort(function(a,b){return a.d<b.d?1:a.d>b.d?-1:b.id-a.id});
+  var inn=0,out=0,by={};
+  rows.forEach(function(i){if(i.t==="in")inn+=i.a;else{out+=i.a;by[i.c]=(by[i.c]||0)+i.a}});
+  $("#s-in").textContent=money(inn);$("#s-out").textContent=money(out);
+  var bal=inn-out,b=$("#s-bal");b.textContent=money(bal);b.className=bal<0?"out":bal>0?"in":"";
+  $("#list").innerHTML=rows.length?rows.map(function(i){
+    var dd=i.d.slice(8,10)+"."+i.d.slice(5,7);
+    return'<li><span class="d">'+dd+'</span><span>'+esc(i.c)+(i.n?'<span class="n">'+esc(i.n)+"</span>":"")+'</span><span class="a '+i.t+'">'+(i.t==="in"?"+":"−")+money(i.a)+'</span><button type="button" data-id="'+i.id+'" aria-label="Удалить запись">×</button></li>'}).join("")
+    :'<li class="empty" style="display:block">В этом месяце записей нет. Добавь первую трату или заработок выше.</li>';
+  var cats=Object.keys(by).sort(function(a,b){return by[b]-by[a]});
+  $("#bars").innerHTML=cats.length?cats.map(function(c){
+    return'<div class="bar"><span>'+esc(c)+'</span><i style="width:'+Math.max(3,Math.round(by[c]/out*100))+'%"></i><span>'+money(by[c])+"</span></div>"}).join("")
+    :'<div class="empty">Спущенных бабок за этот месяц пока нет.</div>';
+}
+function setType(t){type=t;$("#t-out").setAttribute("aria-pressed",t==="out");$("#t-in").setAttribute("aria-pressed",t==="in");fillCats()}
+$("#t-out").onclick=function(){setType("out")};
+$("#t-in").onclick=function(){setType("in")};
+$("#month").onchange=function(e){month=e.target.value;render()};
+$("#cur").onchange=function(e){S.cur=e.target.value.trim()||"€";persist();render()};
+$("#list").onclick=function(e){var id=e.target.getAttribute&&e.target.getAttribute("data-id");if(!id)return;
+  S.items=S.items.filter(function(i){return String(i.id)!==id});persist();render()};
+$("#f").onsubmit=function(e){
+  e.preventDefault();
+  var a=parseFloat($("#amt").value.replace(",",".").replace(/\s/g,""));
+  if(!(a>0)){$("#err").textContent="Введи сумму больше нуля.";$("#amt").focus();return}
+  var d=$("#dt").value||today();
+  S.items.push({id:Date.now(),t:type,a:Math.round(a*100)/100,c:$("#cat").value,n:$("#note").value.trim(),d:d});
+  month=d.slice(0,7);
+  $("#err").textContent="";$("#amt").value="";$("#note").value="";persist();render();$("#amt").focus();
+};
+$("#dt").value=today();
+loadLocal();fillCats();render();
+(async function(){
+  try{
+    var c=window.claude;if(!c||!c.use)return;
+    var u=await c.use("user"),db=await c.use("db");if(!u||!db)return;
+    var id=await u.id();if(!id)return;
+    dbDoc=db.doc("data/users/"+id+"/ledger");
+    var s=await dbDoc.get();
+    if(s.exists){S=s.data();fix();try{localStorage.setItem("ledger-v1",JSON.stringify(S))}catch(e){}render()}
+    else if(S.items.length){dbDoc.set(S)}
+    $("#hint").textContent="Записи сохраняются в твоём аккаунте и видны только тебе.";
+  }catch(e){dbDoc=null}
+})();
+})();
+</script>
+</body>
+</html>

@@ -64,8 +64,8 @@ svg.i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stro
 .hist{margin-top:12px;border-top:1px solid var(--line);padding-top:10px;font-size:14px}
 .hist div{display:flex;justify-content:space-between;padding:4px 0;color:var(--mu)}
 .empty{text-align:center;color:var(--mu);padding:30px 10px}
-.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;gap:4px;padding:6px;border-radius:999px;z-index:5}
-.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 20px;border-radius:999px;color:var(--mu);font-size:11px;font-weight:600;transition:all .25s}
+.tabs{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;gap:2px;padding:4px;border-radius:999px;z-index:7;-webkit-user-select:none;user-select:none;touch-action:manipulation}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 14px;border-radius:999px;color:var(--mu);font-size:10px;font-weight:600;transition:all .25s}
 .tabs button.on{background:var(--pill);color:var(--ac)}
 #ov{position:fixed;inset:0;background:rgba(0,0,0,.35);opacity:0;pointer-events:none;transition:opacity .3s;z-index:8}
 #ov.open{opacity:1;pointer-events:auto}
@@ -94,8 +94,9 @@ button{touch-action:manipulation}
 .quote{font-size:14px;line-height:1.45;color:var(--mu);margin:-6px 4px 16px}
 .by{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 3px);font-size:10px;line-height:1;letter-spacing:.08em;color:var(--mu);opacity:.85;pointer-events:none;z-index:4}
 .tabs{align-items:center}
-.tabs button.big{padding:12px 28px;font-size:12px}
-.tabs button.big svg{width:28px;height:28px}
+.tabs svg.i{width:18px;height:18px}
+.tabs button.big{padding:9px 26px;font-size:11px}
+.tabs button.big svg{width:30px;height:30px}
 label{font-size:14px}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
@@ -124,7 +125,7 @@ function el(h){return (h.end||Date.now())-h.start}
 function parts(ms){ms=Math.max(ms,0);return{d:Math.floor(ms/864e5),h:Math.floor(ms%864e5/36e5),m:Math.floor(ms%36e5/6e4)}}
 function dur(ms){var t=parts(ms);return t.d+' д '+t.h+' ч '+t.m+' мин'}
 function go(t){tab=t;render()}
-function totals(){var today=ymd(new Date());var dep=S.events.filter(function(e){return e.type==='dep'&&e.date<=today}).reduce(function(a,e){return a+e.amount},0);var saved=S.base+dep;return{saved:saved,left:Math.max(S.goal-saved,0),p:S.goal>0?Math.min(saved/S.goal,1):0}}
+function totals(){var today=ymd(new Date());var dep=S.events.filter(function(e){return e.type==='dep'&&(e.auto?e.date<today:e.date<=today)}).reduce(function(a,e){return a+e.amount},0);var saved=S.base+dep;return{saved:saved,left:Math.max(S.goal-saved,0),p:S.goal>0?Math.min(saved/S.goal,1):0}}
 function head(t,btn,sub){return '<div class="top"><div><h1>'+t+'</h1><div class="mu">'+(sub||'')+'</div></div><div style="display:flex;gap:8px">'+(btn||'')+'<button class="rb glass" aria-label="Тема" onclick="toggleTheme()">◐</button></div></div>'}
 var QA=['Помни, зачем ты начал.','Ты уже на пути к цели.','Маленький шаг сегодня — большой результат завтра.','Сегодня отличный день, чтобы стать ближе к цели.','Ты сильнее, чем кажется.','Дисциплина — это забота о будущем себе.','Каждый день без срыва — твоя победа.','Не торопись, главное — двигаться.','Цель становится ближе с каждым взносом.','Ты делаешь это для себя.','Спокойно и уверенно, шаг за шагом.','Твоя настойчивость уже даёт результат.','Начни день с мысли о своей цели.','Тот, кто идёт, обязательно дойдёт.','Ты выбрал себя, и это правильно.','Привычки строят жизнь, о которой ты мечтаешь.','Не нужно быть идеальным, нужно продолжать.','Сегодняшнее решение работает на твоё будущее.','Всё большое складывается из маленьких дней.','Верь в себя, у тебя получается.'];
 var QB=['Даже небольшой взнос приближает мечту.','Если оступился, просто начни заново.','Гордись тем, сколько уже пройдено.','Одно маленькое действие сегодня, и день удался.','Через месяц ты скажешь себе спасибо.','Сравнивай себя только с собой вчерашним.','Ты уже доказал, что можешь.','Лёгкие и трудные дни одинаково приближают к цели.','Отдыхай, но не сдавайся.','Береги деньги и свои силы.','Представь, как будет здорово достичь цели.','Сегодня выбери то, что порадует тебя завтра.','Прогресс важнее скорости.','Тяга пройдёт, а результат останется.','Ты не один, у тебя есть план.','Каждый день — это новый шанс.','Спокойствие и регулярность побеждают всё.','Награда за терпение всегда приходит.','Продолжай, у тебя хороший темп.','Ты молодец, что не бросаешь.'];
@@ -162,7 +163,7 @@ var rec=Math.max.apply(null,[ms].concat((x.history||[]).map(function(r){return r
 return '<div class="card hc"><div class="nm"><span>'+esc(x.name)+'</span><span class="mu">'+(x.end?'остановлено':'идёт')+'</span></div><div class="tm" data-id="'+x.id+'">'+t.d+' <small>д</small> '+t.h+' <small>ч</small> '+t.m+' <small>мин</small></div><div class="bar"><i style="width:'+pr+'%"></i></div><div class="mu" style="margin-top:6px">Следующая отметка: '+nx+' '+pl(nx,['день','дня','дней'])+' · рекорд '+parts(rec).d+' д</div><div class="acts"><button class="chip r" onclick="askReset('+x.id+')">Сбросить</button><button class="chip" onclick="stopH('+x.id+')">'+(x.end?'Возобновить':'Остановить')+'</button><button class="chip" onclick="tg('+x.id+')">История</button><button class="chip" style="background:none;color:var(--mu)" onclick="askDel('+x.id+')">Удалить</button></div>'+(openH[x.id]?'<div class="hist">'+hist+'</div>':'')+'</div>'}).join('');
 return head('Привычки','<button class="rb glass" aria-label="Добавить" onclick="habitSheet()">'+ic('pl')+'</button>','Считайте дни без вредных привычек')+(h||'<div class="card empty">Добавьте первую привычку, например «Без сахара», и счётчик пойдёт сразу.</div>')}
 function render(){var v=$('#view');v.innerHTML=tab==='home'?home():tab==='cal'?cal():habits();
-$('#tabs').innerHTML=[['cal','Календарь','cal'],['home','Главная','home'],['habits','Привычки','fire']].map(function(t){return '<button class="'+(tab===t[0]?'on':'')+(t[0]==='home'?' big':'')+'" onclick="go(\''+t[0]+'\')">'+ic(t[2])+t[1]+'</button>'}).join('')}
+$('#tabs').innerHTML=[['cal','Календарь','cal'],['home','Главная','home'],['habits','Привычки','fire']].map(function(t){return '<button class="'+(tab===t[0]?'on':'')+(t[0]==='home'?' big':'')+'" data-go="'+t[0]+'">'+ic(t[2])+t[1]+'</button>'}).join('')}
 function $(s){return document.querySelector(s)}
 function openS(h){$('#sheet').innerHTML='<div class="grab"></div>'+h;$('#sheet').classList.add('open');$('#ov').classList.add('open')}
 function closeS(){$('#sheet').classList.remove('open');$('#ov').classList.remove('open');sel=null;if(tab==='cal')render()}
@@ -190,6 +191,8 @@ function doDel(id){S.habits=S.habits.filter(function(x){return x.id!==id});save(
 function stopH(id){var h=H(id);if(h.end){h.start+=Date.now()-h.end;delete h.end}else h.end=Date.now();save();render()}
 function tg(id){openH[id]=!openH[id];render()}
 applyTheme();render();
+var tb=$('#tabs');function hit(e){var b=e.target.closest&&e.target.closest('[data-go]');if(b&&b.dataset.go!==tab){e.preventDefault();go(b.dataset.go)}}
+tb.addEventListener('click',hit);tb.addEventListener('touchend',hit,{passive:false});
 setInterval(function(){if(tab==='habits'&&!$('#sheet').classList.contains('open'))render()},30000);
 </script>
 </body>

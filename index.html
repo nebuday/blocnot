@@ -3,6 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#e8eefc">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Копилка">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Копилка</title>
 <style>
 :root{--bg1:#e8eefc;--bg2:#fbeef4;--b1:rgba(10,132,255,.28);--b2:rgba(255,100,150,.22);--glass:rgba(255,255,255,.52);--edge:rgba(255,255,255,.75);--line:rgba(0,0,0,.08);--tx:#10141f;--mu:#6b7280;--ac:#0a84ff;--gr:#2fb866;--rd:#ff453a;--pill:rgba(10,132,255,.14);--sh:0 8px 30px rgba(20,30,60,.08);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
@@ -84,6 +89,9 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--ac);outline-off
 .pre{display:flex;align-items:center;width:100%;padding:13px 16px;margin-top:8px;border-radius:16px;border:1px solid var(--line);background:var(--glass);font-size:16px;text-align:left}
 .pre:active{background:var(--pill)}
 .chip.sel{background:var(--ac);color:#fff}
+html{-webkit-text-size-adjust:100%}
+button{touch-action:manipulation}
+.quote{font-size:14px;line-height:1.45;color:var(--mu);margin:-6px 4px 16px}
 .by{position:fixed;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 3px);font-size:10px;line-height:1;letter-spacing:.08em;color:var(--mu);opacity:.85;pointer-events:none;z-index:4}
 .tabs{align-items:center}
 .tabs button.big{padding:12px 28px;font-size:12px}
@@ -118,11 +126,14 @@ function dur(ms){var t=parts(ms);return t.d+' д '+t.h+' ч '+t.m+' мин'}
 function go(t){tab=t;render()}
 function totals(){var today=ymd(new Date());var dep=S.events.filter(function(e){return e.type==='dep'&&e.date<=today}).reduce(function(a,e){return a+e.amount},0);var saved=S.base+dep;return{saved:saved,left:Math.max(S.goal-saved,0),p:S.goal>0?Math.min(saved/S.goal,1):0}}
 function head(t,btn,sub){return '<div class="top"><div><h1>'+t+'</h1><div class="mu">'+(sub||'')+'</div></div><div style="display:flex;gap:8px">'+(btn||'')+'<button class="rb glass" aria-label="Тема" onclick="toggleTheme()">◐</button></div></div>'}
+var QA=['Помни, зачем ты начал.','Ты уже на пути к цели.','Маленький шаг сегодня — большой результат завтра.','Сегодня отличный день, чтобы стать ближе к цели.','Ты сильнее, чем кажется.','Дисциплина — это забота о будущем себе.','Каждый день без срыва — твоя победа.','Не торопись, главное — двигаться.','Цель становится ближе с каждым взносом.','Ты делаешь это для себя.','Спокойно и уверенно, шаг за шагом.','Твоя настойчивость уже даёт результат.','Начни день с мысли о своей цели.','Тот, кто идёт, обязательно дойдёт.','Ты выбрал себя, и это правильно.','Привычки строят жизнь, о которой ты мечтаешь.','Не нужно быть идеальным, нужно продолжать.','Сегодняшнее решение работает на твоё будущее.','Всё большое складывается из маленьких дней.','Верь в себя, у тебя получается.'];
+var QB=['Даже небольшой взнос приближает мечту.','Если оступился, просто начни заново.','Гордись тем, сколько уже пройдено.','Одно маленькое действие сегодня, и день удался.','Через месяц ты скажешь себе спасибо.','Сравнивай себя только с собой вчерашним.','Ты уже доказал, что можешь.','Лёгкие и трудные дни одинаково приближают к цели.','Отдыхай, но не сдавайся.','Береги деньги и свои силы.','Представь, как будет здорово достичь цели.','Сегодня выбери то, что порадует тебя завтра.','Прогресс важнее скорости.','Тяга пройдёт, а результат останется.','Ты не один, у тебя есть план.','Каждый день — это новый шанс.','Спокойствие и регулярность побеждают всё.','Награда за терпение всегда приходит.','Продолжай, у тебя хороший темп.','Ты молодец, что не бросаешь.'];
+function quote(){var d=Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),i=(d*7)%400;return QA[i%20]+' '+QB[Math.floor(i/20)]}
 function home(){var t=totals(),C=2*Math.PI*86,pc=Math.round(t.p*100);
 var best=S.habits.slice().sort(function(a,b){return el(b)-el(a)})[0];var bd=best?parts(el(best)).d:0;
 setTimeout(function(){var f=document.querySelector('.fg');if(f)f.style.strokeDashoffset=C*(1-t.p)},60);
 function st(i,l,v,fn){return '<button class="card stat" onclick="'+fn+'"><span class="ic">'+ic(i)+'</span><span class="mu">'+l+'</span><b>'+v+'</b></button>'}
-return head('Главная','','Ваш прогресс к цели')+'<div class="card hero"><div class="ring"><svg width="200" height="200" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--ac)"/><stop offset="1" stop-color="var(--gr)"/></linearGradient></defs><circle class="bg" cx="100" cy="100" r="86"/><circle class="fg" cx="100" cy="100" r="86" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'"/></svg><div class="c"><b>'+pc+'%</b><span class="mu">до цели</span></div></div></div>'
+return head('Главная')+'<p class="quote">'+quote()+'</p>'+'<div class="card hero"><div class="ring"><svg width="200" height="200" viewBox="0 0 200 200"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--ac)"/><stop offset="1" stop-color="var(--gr)"/></linearGradient></defs><circle class="bg" cx="100" cy="100" r="86"/><circle class="fg" cx="100" cy="100" r="86" stroke-dasharray="'+C+'" stroke-dashoffset="'+C+'"/></svg><div class="c"><b>'+pc+'%</b><span class="mu">до цели</span></div></div></div>'
 +'<div class="grid">'+st('wal','Уже накоплено',money(t.saved),'goalSheet()')+st('fl','Осталось накопить',money(t.left),'goalSheet()')+st('tg','Цель накопления',money(S.goal),'goalSheet()')+st('fire',best?esc(best.name):'Привычка',best?bd+' '+pl(bd,['день','дня','дней']):'Добавить','go(\'habits\')')+'</div>'}
 function cal(){var y=cm.getFullYear(),m=cm.getMonth(),first=(new Date(y,m,1).getDay()+6)%7,n=new Date(y,m+1,0).getDate(),today=ymd(new Date());
 var lab=new Intl.DateTimeFormat('ru',{month:'long',year:'numeric'}).format(cm);lab=lab[0].toUpperCase()+lab.slice(1);
